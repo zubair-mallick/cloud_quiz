@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { 
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -8,6 +8,11 @@ import { TrendingUp, BookOpen, Target, Calendar, BrainCircuit, AlertCircle, Load
 import { fetchDashboardData, DashboardData } from "../services/dashboard";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+
+// Define interfaces for components
+interface AIInsightProps {
+  dashboardData: DashboardData | null;
+}
 
 // Topic colors for visualization
 const topicColors = {
@@ -31,8 +36,147 @@ const formatDate = (dateString: string) => {
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 };
 
+// AI Insight Component - extracted from Dashboard
+const AIInsight: React.FC<AIInsightProps> = ({ dashboardData }) => {
+  const weakTopics = Object.keys(dashboardData?.weak_topics || {}).slice(0, 2).join(' and ') || 'key areas';
+
+ const insightTemplates = [
+  `Focus on ${weakTopics} to enhance your results.`,
+  `Revisiting ${weakTopics} could help you perform better in future quizzes.`,
+  `You may want to spend extra time studying ${weakTopics}.`,
+  `Improving your grasp on ${weakTopics} will boost your confidence.`,
+  `Pay close attention to ${weakTopics} as they currently show lower scores.`,
+  `Mastering ${weakTopics} will significantly raise your overall performance.`,
+  `Analyze mistakes made in ${weakTopics} to avoid them next time.`,
+  `Strengthen your fundamentals in ${weakTopics} for better accuracy.`,
+  `Make ${weakTopics} your focus in the next study session.`,
+  `Address gaps in ${weakTopics} to unlock your full potential.`,
+
+  `Concentrate on ${weakTopics} to build a stronger base for advanced topics. 
+   Continuous practice here will make a big difference.`,
+
+  `Your current progress is commendable, but ${weakTopics} need more attention. 
+   Set aside extra time to review and reinforce them.`,
+
+  `Take a closer look at ${weakTopics}, where your scores show room for growth. 
+   This is a great opportunity to improve consistently.`,
+
+  `Don’t let ${weakTopics} hold you back from achieving excellence. 
+   Tackle them with focused revision sessions.`,
+
+  `Improvement in ${weakTopics} will reflect positively in your final assessment. 
+   Make it a part of your daily review plan.`,
+
+  `Your grasp of most topics is solid, but ${weakTopics} need reinforcement. 
+   Targeted effort here will lead to better outcomes.`,
+
+  `Reinforce your understanding of ${weakTopics} through interactive learning. 
+   Using flashcards or mind maps may help.`,
+
+  `Consider revisiting ${weakTopics} using different learning strategies. 
+   A change in approach might bring better clarity.`,
+
+  `${weakTopics} appear to be consistent weak points. 
+   Breaking them into sub-topics can make them more manageable.`,
+
+  `Learning is a journey, and ${weakTopics} are part of that growth. 
+   Keep practicing, and you’ll notice steady improvement.`,
+
+  `Building confidence in ${weakTopics} requires patience and persistence. 
+   Dedicate short, focused sessions to master them gradually.`,
+
+  `Your learning path is unique, and ${weakTopics} are stepping stones. 
+   Embrace the challenge and rise above them.`,
+
+  `Progress in ${weakTopics} may be slow now, but with consistent effort, 
+   you’ll convert weaknesses into strengths.`,
+
+  `Review mistakes made in ${weakTopics} to discover patterns. 
+   Learning from errors is key to mastering the subject.`,
+
+  `Revise ${weakTopics} using real-world examples and practice problems. 
+   This hands-on approach can deepen your understanding.`,
+
+  `Don't overlook ${weakTopics}; even small improvements here 
+   can lead to significant overall score boosts.`,
+
+  `Make ${weakTopics} a priority in your revision plan. 
+   Breaking them down into simpler parts might help.`,
+
+  `Strive to turn ${weakTopics} into strengths by revisiting them 
+   at the end of every study cycle.`,
+
+  `Understanding ${weakTopics} better will not only improve your quiz scores 
+   but also strengthen your overall subject proficiency.`
+];
+
+
+  const selectedInsight = useMemo(() => {
+    const randomIndex = Math.floor(Math.random() * insightTemplates.length);
+    return insightTemplates[randomIndex];
+  }, [dashboardData]);
+
+  return (
+    <div className="space-y-8 p-4 md:p-6">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Learning Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-300 mt-1">
+            Track your progress and get AI-powered insights
+          </p>
+        </div>
+        
+        <motion.button
+          className="flex items-center px-6 py-3 bg-primary text-white rounded-lg shadow-md hover:shadow-lg hover:bg-primary/90 transition-all"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <BarChart2 className="h-5 w-5 mr-2" />
+          <span className="font-medium">Quiz Statistics</span>
+          <ExternalLink className="h-4 w-4 ml-1" />
+        </motion.button>
+      </div>
+      
+      {/* AI Insights Card */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-100 dark:border-gray-700 lg:col-span-3">
+        <div className="flex items-start mb-4">
+          <div className="bg-primary/10 p-3 rounded-xl mr-4">
+            <BrainCircuit className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">AI-Driven Insights</h2>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">Based on your recent quiz performance</p>
+          </div>
+        </div>
+        
+        <div className="p-5 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl mb-4">
+          <p className="text-gray-800 dark:text-gray-200">
+            <strong>AI Insight:</strong> {selectedInsight}
+          </p>
+          <div className="mt-3 text-sm text-gray-500 dark:text-gray-400 flex items-center">
+            <AlertCircle className="h-4 w-4 mr-1" />
+            Last updated: {dashboardData?.insight_last_updated ? new Date(dashboardData.insight_last_updated).toLocaleDateString() : 'Recently'}
+          </div>
+        </div>
+        
+        <div className="flex flex-wrap gap-2">
+          {Object.keys(dashboardData?.weak_topics || {}).map((topic, index) => (
+            <span 
+              key={`topic-${index}`}
+              className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm"
+            >
+              {topic}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Main Dashboard Component
-const Dashboard = () => {
+const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState("performance");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -239,113 +383,63 @@ const Dashboard = () => {
   }, [getCurrentUser, isAuthenticated, retryCount, authRetryCount]);
 
   return (
-    <div className="space-y-8 p-4 md:p-6">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Learning Dashboard</h1>
-          <p className="text-gray-600 dark:text-gray-300 mt-1">
-            Track your progress and get AI-powered insights
-          </p>
-        </div>
-        
-        <motion.button
-          onClick={() => navigate('/dashboard/quiz-stats')}
-          className="flex items-center px-6 py-3 bg-primary text-white rounded-lg shadow-md hover:shadow-lg hover:bg-primary/90 transition-all"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <BarChart2 className="h-5 w-5 mr-2" />
-          <span className="font-medium">Quiz Statistics</span>
-          <ExternalLink className="h-4 w-4 ml-1" />
-        </motion.button>
-      </div>
-      
+    <div className="space-y-8">
       {/* Loading and Error States */}
       {loading ? (
         <div className="flex flex-col justify-center items-center min-h-[400px] bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 border border-gray-100 dark:border-gray-700">
-              <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-              <span className="text-gray-600 dark:text-gray-300">Loading dashboard data...</span>
-            </div>
-          ) : authError ? (
-            <div className="bg-amber-50 dark:bg-amber-900/20 p-8 rounded-xl border border-amber-200 dark:border-amber-800 text-center shadow-md">
-              <div className="mx-auto mb-4 bg-amber-100 dark:bg-amber-800/30 p-3 rounded-full inline-flex">
-                <LogIn className="h-8 w-8 text-amber-600 dark:text-amber-400" />
-              </div>
-              <h3 className="text-amber-800 dark:text-amber-400 font-medium text-lg mb-2">Authentication Required</h3>
-              <p className="text-amber-700 dark:text-amber-300 mb-6">{error || "Please log in to view your dashboard"}</p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <button 
-                  className="px-5 py-2.5 bg-amber-100 dark:bg-amber-800 text-amber-700 dark:text-amber-200 rounded-lg hover:bg-amber-200 dark:hover:bg-amber-700 transition-colors"
-                  onClick={() => navigate('/')}
-                >
-                  Go to Home Page
-                </button>
-                <button 
-                  className="px-5 py-2.5 bg-primary text-white rounded-lg shadow-md hover:shadow-lg hover:bg-primary/90 transition-all"
-                  onClick={() => window.location.reload()}
-                >
-                  Try Again
-                </button>
-              </div>
-            </div>
-          ) : error ? (
-            <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-xl border border-red-200 dark:border-red-800 shadow-md">
-              <div className="flex items-start">
-                <AlertCircle className="h-6 w-6 text-red-500 mt-0.5 mr-3" />
-                <div>
-                  <h3 className="text-lg font-semibold text-red-800 dark:text-red-400">Error Loading Dashboard</h3>
-                  <p className="text-red-600 dark:text-red-300 mt-1">{error}</p>
-                  <button 
-                    onClick={() => window.location.reload()}
-                    className="mt-4 px-4 py-2 bg-red-100 dark:bg-red-800 text-red-600 dark:text-red-200 rounded-lg hover:bg-red-200 dark:hover:bg-red-700 transition-colors"
-                  >
-                    Retry
-                  </button>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <motion.div 
-              className="grid gap-8"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
+          <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+          <span className="text-gray-600 dark:text-gray-300">Loading dashboard data...</span>
+        </div>
+      ) : authError ? (
+        <div className="bg-amber-50 dark:bg-amber-900/20 p-8 rounded-xl border border-amber-200 dark:border-amber-800 text-center shadow-md">
+          <div className="mx-auto mb-4 bg-amber-100 dark:bg-amber-800/30 p-3 rounded-full inline-flex">
+            <LogIn className="h-8 w-8 text-amber-600 dark:text-amber-400" />
+          </div>
+          <h3 className="text-amber-800 dark:text-amber-400 font-medium text-lg mb-2">Authentication Required</h3>
+          <p className="text-amber-700 dark:text-amber-300 mb-6">{error || "Please log in to view your dashboard"}</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <button 
+              className="px-5 py-2.5 bg-amber-100 dark:bg-amber-800 text-amber-700 dark:text-amber-200 rounded-lg hover:bg-amber-200 dark:hover:bg-amber-700 transition-colors"
+              onClick={() => navigate('/')}
             >
+              Go to Home Page
+            </button>
+            <button 
+              className="px-5 py-2.5 bg-primary text-white rounded-lg shadow-md hover:shadow-lg hover:bg-primary/90 transition-all"
+              onClick={() => window.location.reload()}
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      ) : error ? (
+        <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-xl border border-red-200 dark:border-red-800 shadow-md">
+          <div className="flex items-start">
+            <AlertCircle className="h-6 w-6 text-red-500 mt-0.5 mr-3" />
+            <div>
+              <h3 className="text-lg font-semibold text-red-800 dark:text-red-400">Error Loading Dashboard</h3>
+              <p className="text-red-600 dark:text-red-300 mt-1">{error}</p>
+              <button 
+                onClick={() => window.location.reload()}
+                className="mt-4 px-4 py-2 bg-red-100 dark:bg-red-800 text-red-600 dark:text-red-200 rounded-lg hover:bg-red-200 dark:hover:bg-red-700 transition-colors"
+              >
+                Retry
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <motion.div 
+          className="grid gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
               {/* Dashboard Content Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* AI Insights Card */}
-                <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-100 dark:border-gray-700 lg:col-span-3">
-                  <div className="flex items-start mb-4">
-                    <div className="bg-primary/10 p-3 rounded-xl mr-4">
-                      <BrainCircuit className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-semibold text-gray-900 dark:text-white">AI-Driven Insights</h2>
-                      <p className="text-gray-600 dark:text-gray-400 mt-1">Based on your recent quiz performance</p>
-                    </div>
-                  </div>
-                  
-                  <div className="p-5 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl mb-4">
-                    <p className="text-gray-800 dark:text-gray-200">
-                      <strong>Areas for improvement:</strong> Focus on {Object.keys(dashboardData?.weak_topics || {}).slice(0, 2).join(' and ') || 'key areas'} to enhance your results.
-                    </p>
-                    <div className="mt-3 text-sm text-gray-500 dark:text-gray-400 flex items-center">
-                      <AlertCircle className="h-4 w-4 mr-1" />
-                      Last updated: {dashboardData?.insight_last_updated ? new Date(dashboardData.insight_last_updated).toLocaleDateString() : 'Recently'}
-                    </div>
-                  </div>
-                  
-                  <div className="flex flex-wrap gap-2">
-                    {Object.keys(dashboardData?.weak_topics || {}).map((topic, index) => (
-                      <span 
-                        key={`topic-${index}`}
-                        className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm"
-                      >
-                        {topic}
-                      </span>
-                    ))}
-                  </div>
+                {/* Render the AIInsight component */}
+                <div className="lg:col-span-3">
+                  <AIInsight dashboardData={dashboardData} />
                 </div>
 
                 {/* Tabs for different charts */}

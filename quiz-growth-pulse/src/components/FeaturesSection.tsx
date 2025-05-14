@@ -39,28 +39,28 @@ const FeaturesSection = () => {
       title: "Take Quizzes",
       description: "Access hundreds of professionally designed quizzes across various subjects and difficulty levels.",
       delay: 100,
-      link: "/quizzes"
+      link: "/quiz"
     },
     {
       icon: <BarChart3 className="h-6 w-6 text-primary" />,
       title: "Track Progress",
       description: "Monitor your learning journey with detailed analytics and visualizations of your performance.",
       delay: 300,
-      link: "/progress"
+      link: "/dashboard"
     },
     {
       icon: <BrainCircuit className="h-6 w-6 text-primary" />,
       title: "AI Insights",
       description: "Receive personalized recommendations and insights based on your learning patterns.",
       delay: 500,
-      link: "/insights"
+      link: "/dashboard/quiz-stats"
     },
     {
       icon: <Sparkles className="h-6 w-6 text-primary" />,
       title: "Earn Badges",
       description: "Unlock achievements and badges as you improve your knowledge and master new subjects.",
       delay: 700,
-      link: "/badges"
+      link: "/result"
     }
   ];
 

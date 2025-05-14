@@ -1,5 +1,6 @@
 import { ArrowDown, BookOpen, Brain, ChevronRight, LightbulbIcon, LineChart } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const LandingHero = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -71,16 +72,16 @@ const LandingHero = () => {
                 : 'translate-y-8 opacity-0'
             }`}
           >
-            <button 
+            <Link to={"/quiz"} 
               className="btn-primary flex items-center px-8 py-3 transition-transform duration-300 hover:scale-105 active:scale-95"
             >
               Get Started <ChevronRight className="ml-1 h-4 w-4" />
-            </button>
-            <button 
+            </Link>
+           <Link to={"/quiz"} 
               className="btn-outline flex items-center px-8 py-3 transition-transform duration-300 hover:scale-105 active:scale-95"
             >
               Explore Quizzes
-            </button>
+            </Link>
           </div>
           
           <a 
