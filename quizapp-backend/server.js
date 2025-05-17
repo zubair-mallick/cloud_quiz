@@ -76,10 +76,10 @@ server.on('error', (error) => {
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('SIGTERM received. Shutting down gracefully');
+
   server.close(() => {
     mongoose.connection.close(false, () => {
-      console.log('MongoDB connection closed.');
+     
       process.exit(0);
     });
   });
@@ -87,10 +87,10 @@ process.on('SIGTERM', () => {
 
 // SIGINT handler (for Ctrl+C)
 process.on('SIGINT', () => {
-  console.log('SIGINT received. Shutting down gracefully');
+ 
   server.close(() => {
     mongoose.connection.close(false, () => {
-      console.log('MongoDB connection closed.');
+    
       process.exit(0);
     });
   });

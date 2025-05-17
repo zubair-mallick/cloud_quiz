@@ -95,14 +95,7 @@ export const getQuizQuestions = async (req, res) => {
   try {
     const quiz_id = req.params.id || req.query.quiz_id;
     
-    console.log('Request to fetch quiz questions:', {
-      quiz_id,
-      method: req.method,
-      path: req.path,
-      params: req.params,
-      query: req.query,
-      auth: req.headers.authorization ? 'Bearer token present' : 'No auth token'
-    });
+
     
     if (!quiz_id || quiz_id.trim() === '') {
       return res.status(400).json({
@@ -115,18 +108,11 @@ export const getQuizQuestions = async (req, res) => {
 
     // Log the count and a sample question first
     const diagnosticQuery = await Question.findOne({ quiz_id: sanitizedQuizId });
-    console.log('Diagnostic query result:', {
-      found: !!diagnosticQuery,
-      sampleQuestion: diagnosticQuery ? {
-        id: diagnosticQuery.id,
-        quiz_id: diagnosticQuery.quiz_id,
-        content: diagnosticQuery.content.substring(0, 30)
-      } : null
-    });
+
 
     // Get all questions for this quiz (not just a sample)
     const questions = await Question.find({ quiz_id: sanitizedQuizId });
-    console.log(`Found ${questions.length} questions for quiz_id: ${sanitizedQuizId}`);
+  
 
     if (!questions || questions.length === 0) {
       return res.status(404).json({
@@ -153,11 +139,7 @@ export const getQuizQuestions = async (req, res) => {
       total_questions: formattedQuestions.length
     };
 
-    console.log('Sending response with questions:', {
-      questionCount: formattedQuestions.length,
-      timeLimit: response.time_limit,
-      sampleQuestionId: formattedQuestions[0]?.id
-    });
+   
 
     res.status(200).json(response);
   } catch (error) {

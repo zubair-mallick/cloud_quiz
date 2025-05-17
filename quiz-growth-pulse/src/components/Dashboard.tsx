@@ -40,6 +40,8 @@ const formatDate = (dateString: string) => {
 const AIInsight: React.FC<AIInsightProps> = ({ dashboardData }) => {
   const weakTopics = Object.keys(dashboardData?.weak_topics || {}).slice(0, 2).join(' and ') || 'key areas';
 
+  
+
  const insightTemplates = [
   `Focus on ${weakTopics} to enhance your results.`,
   `Revisiting ${weakTopics} could help you perform better in future quizzes.`,
@@ -110,6 +112,11 @@ const AIInsight: React.FC<AIInsightProps> = ({ dashboardData }) => {
    but also strengthen your overall subject proficiency.`
 ];
 
+ const navigate = useNavigate();
+
+  const goToAbout = () => {
+    navigate('/dashboard/quiz-stats');
+  };
 
   const selectedInsight = useMemo(() => {
     const randomIndex = Math.floor(Math.random() * insightTemplates.length);
@@ -128,6 +135,12 @@ const AIInsight: React.FC<AIInsightProps> = ({ dashboardData }) => {
         </div>
         
         <motion.button
+         onClick={
+          ()=>
+            goToAbout()
+          
+         }
+
           className="flex items-center px-6 py-3 bg-primary text-white rounded-lg shadow-md hover:shadow-lg hover:bg-primary/90 transition-all"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}

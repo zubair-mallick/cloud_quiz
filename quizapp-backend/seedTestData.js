@@ -33,7 +33,7 @@ const TEST_USERNAME = 'testuser';
 // Seed data
 const seedTestData = async () => {
   try {
-    console.log('Starting to seed test data...');
+  
     
     // Clear existing test data if any
     await clearTestData();
@@ -46,7 +46,7 @@ const seedTestData = async () => {
       email: TEST_USER_EMAIL,
       password: hashedPassword
     });
-    console.log(`Created test user: ${user.username} (${user._id})`);
+   
     
     // Create test quizzes
     const quizzes = await createTestQuizzes();
@@ -61,13 +61,10 @@ const seedTestData = async () => {
     const badges = await createTestBadges();
     await createTestUserBadges(TEST_USER_ID, badges);
     
-    console.log('✅ Test data seeding completed successfully!');
-    console.log(`Test User Email: ${TEST_USER_EMAIL}`);
-    console.log(`Test User Password: ${TEST_USER_PASSWORD}`);
     
     // Disconnect from MongoDB
     await mongoose.disconnect();
-    console.log('MongoDB disconnected');
+ 
     
   } catch (error) {
     console.error('Error seeding test data:', error);
@@ -77,17 +74,17 @@ const seedTestData = async () => {
 
 // Helper function to clear existing test data
 const clearTestData = async () => {
-  console.log('Clearing existing test data...');
+
   await User.deleteOne({ email: TEST_USER_EMAIL });
   await QuizAttempt.deleteMany({ user_id: TEST_USER_ID });
   await MLInsight.deleteMany({ user_id: TEST_USER_ID });
   await UserBadge.deleteMany({ user_id: TEST_USER_ID });
-  console.log('Existing test data cleared.');
+ 
 };
 
 // Helper function to create test quizzes
 const createTestQuizzes = async () => {
-  console.log('Creating test quizzes...');
+ 
   
   const quizTopics = ['Algebra', 'Geometry', 'Chemistry', 'Biology', 'Physics'];
   const quizzes = [];
@@ -125,7 +122,7 @@ const createTestQuizzes = async () => {
     }
     
     quizzes.push({ id: quizId, topic, questions });
-    console.log(`Created quiz: ${quiz.title} with ${questions.length} questions`);
+   
   }
   
   return quizzes;
@@ -133,7 +130,7 @@ const createTestQuizzes = async () => {
 
 // Helper function to create test quiz attempts
 const createTestQuizAttempts = async (userId, quizzes) => {
-  console.log('Creating test quiz attempts...');
+ 
   
   const attempts = [];
   const now = new Date();
@@ -180,7 +177,7 @@ const createTestQuizAttempts = async (userId, quizzes) => {
     }
     
     attempts.push(attempt);
-    console.log(`Created quiz attempt for ${quiz.topic} with score ${score}% and ${correctAnswers} correct answers`);
+  
   }
   
   return attempts;
@@ -188,8 +185,7 @@ const createTestQuizAttempts = async (userId, quizzes) => {
 
 // Helper function to create test MLInsight
 const createTestMLInsight = async (userId) => {
-  console.log('Creating test MLInsight data...');
-  
+ 
   // Create weak and strong topics
   const weakTopics = ['Algebra', 'Chemistry'];
   const strongTopics = ['Biology', 'Physics'];
@@ -219,13 +215,13 @@ const createTestMLInsight = async (userId) => {
     last_updated: new Date()
   });
   
-  console.log(`Created MLInsight data with ${weakTopics.length} weak topics and ${strongTopics.length} strong topics`);
+
   return mlInsight;
 };
 
 // Helper function to create test badges
 const createTestBadges = async () => {
-  console.log('Creating test badges...');
+ 
   
   const badgeData = [
     {
@@ -252,7 +248,7 @@ const createTestBadges = async () => {
   for (const badge of badgeData) {
     const createdBadge = await Badge.create(badge);
     badges.push(createdBadge);
-    console.log(`Created badge: ${createdBadge.name}`);
+   
   }
   
   return badges;
@@ -260,8 +256,7 @@ const createTestBadges = async () => {
 
 // Helper function to create test user badges (achievements)
 const createTestUserBadges = async (userId, badges) => {
-  console.log('Creating test user badge achievements...');
-  
+ 
   const now = new Date();
   const userBadges = [];
   
@@ -278,7 +273,7 @@ const createTestUserBadges = async (userId, badges) => {
     });
     
     userBadges.push(userBadge);
-    console.log(`Awarded badge "${badges[i].name}" to test user`);
+   
   }
   
   return userBadges;
